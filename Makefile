@@ -30,7 +30,7 @@ lint:
 	uv tool run ruff check
 
 mypy:
-	mypy ./src
+	uv run mypy ./src
 
 run:
 	searxng-mcp-server
