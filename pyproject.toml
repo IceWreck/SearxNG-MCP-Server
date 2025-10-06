@@ -1,0 +1,17 @@
+[project]
+name = "searxng-mcp-server"
+version = "0.1.0"
+description = "MCP Server for SearxNG"
+readme = "README.md"
+authors = [
+    { name = "Anchit Bajaj", email = "ab@abifog.com" }
+]
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+searxng-mcp-server = "searxng_mcp_server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
