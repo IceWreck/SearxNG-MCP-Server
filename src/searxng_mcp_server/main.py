@@ -1,6 +1,7 @@
 import sys
 
 from fastmcp import FastMCP
+from fastmcp.tools.tool import Tool
 
 from .config import Config, create_argument_parser
 from .log import get_logger
@@ -33,10 +34,10 @@ def main() -> None:
         sys.exit(1)
 
     # Register tools with MCP server
-    mcp.add_tool(client.search_web)
-    mcp.add_tool(client.search_images)
-    mcp.add_tool(client.search_videos)
-    mcp.add_tool(client.search_news)
+    mcp.add_tool(Tool.from_function(client.search_web))
+    mcp.add_tool(Tool.from_function(client.search_images))
+    mcp.add_tool(Tool.from_function(client.search_videos))
+    mcp.add_tool(Tool.from_function(client.search_news))
 
     # Run the MCP server
     try:

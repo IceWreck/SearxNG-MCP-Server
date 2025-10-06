@@ -1,5 +1,3 @@
-"""SearxNG search client with MCP tools."""
-
 from typing import Any
 from datetime import datetime
 
