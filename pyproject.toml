@@ -5,7 +5,7 @@ description = "MCP Server for SearxNG"
 readme = "README.md"
 authors = [{ name = "Anchit Bajaj", email = "ab@abifog.com" }]
 requires-python = ">=3.11"
-dependencies = ["fastmcp>=2.12.4", "httpx>=0.28.1"]
+dependencies = ["fastmcp>=2.12.4", "httpx>=0.28.1", "pydantic>=2.11.10"]
 
 [project.scripts]
 searxng-mcp-server = "searxng_mcp_server:main"
