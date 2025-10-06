@@ -1,6 +1,52 @@
 # Agents Knowledge
 
-This is an MCP server for the [SearxNG](https://docs.searxng.org/) meta search engine.
+This is an MCP (Model Context Protocol) server for the [SearxNG](https://docs.searxng.org/) meta search engine, providing search capabilities to AI assistants through a standardized protocol.
+
+## Project Overview
+
+The server exposes four main search tools:
+- `search_web` - General web search with customizable parameters
+- `search_images` - Image search functionality
+- `search_videos` - Video search functionality
+- `search_news` - News search with time range filtering
+
+## Architecture
+
+### Core Components
+
+- **FastMCP Integration**: Uses the `fastmcp` library for MCP server implementation
+- **SearxNGClient**: Main client class in `src/searxng_mcp_server/tools.py` that handles all SearxNG API interactions
+- **Pydantic Models**: Type-safe data models in `models.py` for search results and responses
+- **Configuration Management**: Environment-based configuration with CLI argument support
+- **Logging**: Structured logging with configurable levels
+
+### Module Structure
+
+```
+src/searxng_mcp_server/
+├── __init__.py      # Package initialization, exports main function
+├── main.py          # MCP server setup and tool registration
+├── config.py        # Configuration handling from env/CLI args
+├── tools.py         # SearxNGClient implementation and search methods
+├── models.py        # Pydantic models for search results
+└── log.py           # Logging configuration
+```
+
+## Dependencies
+
+- **fastmcp**: MCP server framework
+- **httpx**: Async HTTP client for SearxNG API calls
+- **pydantic**: Data validation and serialization
+
+## Configuration
+
+The server supports environment variables and CLI arguments:
+
+- `SEARXNG_URL`: SearxNG instance URL (default: http://searxng.nymble.abifog.com/)
+- `SEARXNG_TIMEOUT`: Request timeout in seconds (default: 30)
+- `SEARXNG_USER_AGENT`: Custom user agent string (default: searxng-mcp-server/0.1.0)
+- `LOG_LEVEL`: Logging level (default: INFO)
+
 
 ## Code Conventions
 
