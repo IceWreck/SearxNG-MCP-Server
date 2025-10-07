@@ -263,7 +263,7 @@ class SearxNGClient:
 
             return WebSearchResponse(
                 query=query,
-                total_results=raw_results.get("number_of_results", 0),
+                total_results=len(raw_results.get("results", [])),
                 results=search_results,
                 error=None,
             )
@@ -291,7 +291,7 @@ class SearxNGClient:
 
             return ImageSearchResponse(
                 query=query,
-                total_results=raw_results.get("number_of_results", 0),
+                total_results=len(raw_results.get("results", [])),
                 results=image_results,
                 error=None,
             )
@@ -319,7 +319,7 @@ class SearxNGClient:
 
             return VideoSearchResponse(
                 query=query,
-                total_results=raw_results.get("number_of_results", 0),
+                total_results=len(raw_results.get("results", [])),
                 results=video_results,
                 error=None,
             )
@@ -354,7 +354,7 @@ class SearxNGClient:
 
             return NewsSearchResponse(
                 query=query,
-                total_results=raw_results.get("number_of_results", 0),
+                total_results=len(raw_results.get("results", [])),
                 results=news_results,
                 error=None,
             )
