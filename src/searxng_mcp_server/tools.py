@@ -137,6 +137,11 @@ class SearxNGClient:
                 except (ValueError, AttributeError):
                     pass
 
+            # Check if thumbnail_url is base64 and set to None if it is
+            thumbnail_url = result.get("thumbnail")
+            if thumbnail_url and thumbnail_url.startswith("data:image"):
+                thumbnail_url = None
+
             image_result = ImageSearchResult(
                 title=result.get("title", ""),
                 url=result.get("url", ""),
@@ -144,7 +149,7 @@ class SearxNGClient:
                 engine=result.get("engine", "unknown"),
                 score=result.get("score"),
                 published_date=published_date,
-                thumbnail_url=result.get("thumbnail"),
+                thumbnail_url=thumbnail_url,
                 image_url=result.get("img_src"),
             )
             results.append(image_result)
@@ -169,6 +174,11 @@ class SearxNGClient:
                 except (ValueError, AttributeError):
                     pass
 
+            # Check if thumbnail_url is base64 and set to None if it is
+            thumbnail_url = result.get("thumbnail")
+            if thumbnail_url and thumbnail_url.startswith("data:image"):
+                thumbnail_url = None
+
             video_result = VideoSearchResult(
                 title=result.get("title", ""),
                 url=result.get("url", ""),
@@ -176,7 +186,7 @@ class SearxNGClient:
                 engine=result.get("engine", "unknown"),
                 score=result.get("score"),
                 published_date=published_date,
-                thumbnail_url=result.get("thumbnail"),
+                thumbnail_url=thumbnail_url,
             )
             results.append(video_result)
 
