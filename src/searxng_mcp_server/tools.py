@@ -6,14 +6,14 @@ import httpx
 from .config import Config
 from .log import get_logger
 from .models import (
-    ImageResult,
+    ImageSearchResult,
     ImageSearchResponse,
-    NewsResult,
+    NewsSearchResult,
     NewsSearchResponse,
-    SearchResult,
-    VideoResult,
+    VideoSearchResult,
     VideoSearchResponse,
-    SearchResponse,
+    WebSearchResponse,
+    WebSearchResult,
 )
 
 logger = get_logger(__name__)
@@ -31,26 +31,30 @@ class SearxNGClient:
         self.config = config
         self.client = httpx.Client(timeout=config.timeout, headers={"User-Agent": config.user_agent})
 
-    def search(
+    def _search(
         self,
         query: str,
         categories: list[str] | None = None,
         engines: list[str] | None = None,
         language: str | None = None,
         time_range: str | None = None,
-        safesearch: bool | None = None,
+        safesearch: bool = False,
         page: int = 1,
     ) -> dict[str, Any]:
         """Perform a search query on SearxNG.
 
         Args:
             query: Search query string
-            categories: List of categories to search in (e.g., ['general', 'images', 'videos'])
-            engines: List of search engines to use
-            language: Language code for results (e.g., 'en', 'en-US')
-            time_range: Time range filter ('day', 'week', 'month', 'year')
-            safesearch: Safe search filtering (default: true)
-            page: Page number for pagination
+            categories: List of categories to search in (e.g., ['general', 'images', 'videos']).
+                       Use None for default categories.
+            engines: List of search engines to use (e.g., ['google', 'bing']).
+                     Use None for default engine selection.
+            language: Language code for results (e.g., 'en', 'en-US', 'fr', 'de').
+                     Use None for no language preference.
+            time_range: Time range filter ('day', 'week', 'month', 'year').
+                       Use None for no time filtering.
+            safesearch: Safe search filtering (True to enable, False to disable)
+            page: Page number for pagination (starts at 1)
 
         Returns:
             Search results dictionary
@@ -72,10 +76,7 @@ class SearxNGClient:
             params["language"] = language
         if time_range:
             params["time_range"] = time_range
-        if safesearch is not None:
-            params["safesearch"] = 1 if safesearch else 0
-        else:
-            params["safesearch"] = 1  # Default to safe search
+        params["safesearch"] = 1 if safesearch else 0
 
         try:
             response = self.client.get(
@@ -88,14 +89,14 @@ class SearxNGClient:
             logger.error("search request failed: %s", e)
             raise
 
-    def _create_search_results(self, raw_results: dict[str, Any]) -> list[SearchResult]:
-        """Convert SearxNG raw results to SearchResult models.
+    def _create_web_results(self, raw_results: dict[str, Any]) -> list[WebSearchResult]:
+        """Convert SearxNG raw results to WebSearchResult models.
 
         Args:
             raw_results: Raw results from SearxNG API
 
         Returns:
-            List of SearchResult objects
+            List of WebSearchResult objects
         """
         results = []
         for result in raw_results.get("results", []):
@@ -106,7 +107,7 @@ class SearxNGClient:
                 except (ValueError, AttributeError):
                     pass
 
-            search_result = SearchResult(
+            search_result = WebSearchResult(
                 title=result.get("title", ""),
                 url=result.get("url", ""),
                 content=result.get("content"),
@@ -118,7 +119,7 @@ class SearxNGClient:
 
         return results
 
-    def _create_image_results(self, raw_results: dict[str, Any]) -> list[ImageResult]:
+    def _create_image_results(self, raw_results: dict[str, Any]) -> list[ImageSearchResult]:
         """Convert SearxNG raw results to ImageResult models.
 
         Args:
@@ -136,7 +137,7 @@ class SearxNGClient:
                 except (ValueError, AttributeError):
                     pass
 
-            image_result = ImageResult(
+            image_result = ImageSearchResult(
                 title=result.get("title", ""),
                 url=result.get("url", ""),
                 content=result.get("content"),
@@ -150,7 +151,7 @@ class SearxNGClient:
 
         return results
 
-    def _create_video_results(self, raw_results: dict[str, Any]) -> list[VideoResult]:
+    def _create_video_results(self, raw_results: dict[str, Any]) -> list[VideoSearchResult]:
         """Convert SearxNG raw results to VideoResult models.
 
         Args:
@@ -168,7 +169,7 @@ class SearxNGClient:
                 except (ValueError, AttributeError):
                     pass
 
-            video_result = VideoResult(
+            video_result = VideoSearchResult(
                 title=result.get("title", ""),
                 url=result.get("url", ""),
                 content=result.get("content"),
@@ -181,7 +182,7 @@ class SearxNGClient:
 
         return results
 
-    def _create_news_results(self, raw_results: dict[str, Any]) -> list[NewsResult]:
+    def _create_news_results(self, raw_results: dict[str, Any]) -> list[NewsSearchResult]:
         """Convert SearxNG raw results to NewsResult models.
 
         Args:
@@ -199,7 +200,7 @@ class SearxNGClient:
                 except (ValueError, AttributeError):
                     pass
 
-            news_result = NewsResult(
+            news_result = NewsSearchResult(
                 title=result.get("title", ""),
                 url=result.get("url", ""),
                 content=result.get("content"),
@@ -215,44 +216,42 @@ class SearxNGClient:
     def search_web(
         self,
         query: str,
-        categories: list[str] | None = None,
-        engines: list[str] | None = None,
         language: str | None = None,
         time_range: str | None = None,
-        safesearch: bool | None = None,
-        max_results: int | None = None,
-    ) -> SearchResponse:
+        safesearch: bool = False,
+        max_results: int = 10,
+    ) -> WebSearchResponse:
         """Search the web using SearxNG.
 
         Args:
             query: Search query string
-            categories: List of categories to search in
-            engines: List of specific search engines to use
-            language: Language code for results
-            time_range: Time range filter ('day', 'week', 'month', 'year')
-            safesearch: Safe search filtering
-            max_results: Maximum number of results to return
+            language: Language code for results (e.g., 'en', 'en-US', 'fr', 'de').
+                     Use None for no language preference.
+            time_range: Time range filter ('day', 'week', 'month', 'year').
+                       Use None for no time filtering.
+            safesearch: Safe search filtering (True to enable, False to disable)
+            max_results: Maximum number of results to return (default: 10)
 
         Returns:
-            SearchResponse with web search results
+            WebSearchResponse with web search results
         """
         try:
-            raw_results = self.search(
+            raw_results = self._search(
                 query=query,
-                categories=categories,
-                engines=engines,
+                categories=None,
+                engines=None,
                 language=language,
                 time_range=time_range,
                 safesearch=safesearch,
             )
 
-            search_results = self._create_search_results(raw_results)
+            search_results = self._create_web_results(raw_results)
 
-            # Apply max_results limit if specified
-            if max_results is not None and max_results > 0:
+            # Apply max_results limit
+            if max_results > 0:
                 search_results = search_results[:max_results]
 
-            return SearchResponse(
+            return WebSearchResponse(
                 query=query,
                 total_results=raw_results.get("number_of_results", 0),
                 results=search_results,
@@ -260,24 +259,24 @@ class SearxNGClient:
             )
         except Exception as e:
             logger.error("search_web failed: %s", e)
-            return SearchResponse(query=query, total_results=0, results=[], error=str(e))
+            return WebSearchResponse(query=query, total_results=0, results=[], error=str(e))
 
-    def search_images(self, query: str, max_results: int | None = None) -> ImageSearchResponse:
+    def search_images(self, query: str, max_results: int = 10) -> ImageSearchResponse:
         """Search for images using SearxNG.
 
         Args:
             query: Image search query
-            max_results: Maximum number of results to return
+            max_results: Maximum number of results to return (default: 10)
 
         Returns:
             ImageSearchResponse with image search results
         """
         try:
-            raw_results = self.search(query=query, categories=["images"])
+            raw_results = self._search(query=query, categories=["images"])
             image_results = self._create_image_results(raw_results)
 
-            # Apply max_results limit if specified
-            if max_results is not None and max_results > 0:
+            # Apply max_results limit
+            if max_results > 0:
                 image_results = image_results[:max_results]
 
             return ImageSearchResponse(
@@ -290,22 +289,22 @@ class SearxNGClient:
             logger.error("search_images failed: %s", e)
             return ImageSearchResponse(query=query, total_results=0, results=[], error=str(e))
 
-    def search_videos(self, query: str, max_results: int | None = None) -> VideoSearchResponse:
+    def search_videos(self, query: str, max_results: int = 10) -> VideoSearchResponse:
         """Search for videos using SearxNG.
 
         Args:
             query: Video search query
-            max_results: Maximum number of results to return
+            max_results: Maximum number of results to return (default: 10)
 
         Returns:
             VideoSearchResponse with video search results
         """
         try:
-            raw_results = self.search(query=query, categories=["videos"])
+            raw_results = self._search(query=query, categories=["videos"])
             video_results = self._create_video_results(raw_results)
 
-            # Apply max_results limit if specified
-            if max_results is not None and max_results > 0:
+            # Apply max_results limit
+            if max_results > 0:
                 video_results = video_results[:max_results]
 
             return VideoSearchResponse(
@@ -322,24 +321,25 @@ class SearxNGClient:
         self,
         query: str,
         time_range: str | None = None,
-        max_results: int | None = None,
+        max_results: int = 10,
     ) -> NewsSearchResponse:
         """Search for news using SearxNG.
 
         Args:
             query: News search query
-            time_range: Time range filter ('day', 'week', 'month', 'year')
-            max_results: Maximum number of results to return
+            time_range: Time range filter ('day', 'week', 'month', 'year').
+                       Use None for no time filtering.
+            max_results: Maximum number of results to return (default: 10)
 
         Returns:
             NewsSearchResponse with news search results
         """
         try:
-            raw_results = self.search(query=query, categories=["news"], time_range=time_range)
+            raw_results = self._search(query=query, categories=["news"], time_range=time_range)
             news_results = self._create_news_results(raw_results)
 
-            # Apply max_results limit if specified
-            if max_results is not None and max_results > 0:
+            # Apply max_results limit
+            if max_results > 0:
                 news_results = news_results[:max_results]
 
             return NewsSearchResponse(
