@@ -16,4 +16,4 @@ RUN pip install --no-cache-dir --no-deps . && \
 RUN chown -R appuser:appuser /app
 
 USER appuser
-CMD ["searxng-mcp-server"]
+ENTRYPOINT ["searxng-mcp-server"]

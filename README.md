@@ -22,10 +22,10 @@ SEARXNG_URL=https://searx.be uvx searxng-mcp-server
 
 ```bash
 # With command line argument
-podman run --rm -it docker.io/icewreck/searxng-mcp-server:latest --searxng-url https://searx.be
+podman run --rm -i docker.io/icewreck/searxng-mcp-server:latest --searxng-url https://searx.be
 
 # With environment variable
-podman run --rm -it -e SEARXNG_URL=https://searx.be docker.io/icewreck/searxng-mcp-server:latest
+podman run --rm -i -e SEARXNG_URL=https://searx.be docker.io/icewreck/searxng-mcp-server:latest
 ```
 
 ## Available Tools
