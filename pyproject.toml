@@ -6,6 +6,7 @@ readme = "README.md"
 authors = [{ name = "Anchit Bajaj", email = "ab@abifog.com" }]
 requires-python = ">=3.11"
 dependencies = ["fastmcp>=2.12.4", "httpx>=0.28.1", "pydantic>=2.11.10"]
+urls = { Homepage = "https://github.com/IceWreck/SearxNG-MCP-Server", Repository = "https://github.com/IceWreck/SearxNG-MCP-Server" }
 
 [project.scripts]
 searxng-mcp-server = "searxng_mcp_server:main"

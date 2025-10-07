@@ -16,6 +16,8 @@ uvx searxng-mcp-server --searxng-url https://searx.be
 SEARXNG_URL=https://searx.be uvx searxng-mcp-server
 ```
 
+**Package link**: [https://pypi.org/project/searxng-mcp-server/](https://pypi.org/project/searxng-mcp-server/)
+
 ### Using Docker/Podman
 
 ```bash
