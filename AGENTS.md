@@ -42,7 +42,7 @@ src/searxng_mcp_server/
 
 The server supports environment variables and CLI arguments:
 
-- `SEARXNG_URL`: SearxNG instance URL (default: http://searxng.nymble.abifog.com/)
+- `SEARXNG_URL`: SearxNG instance URL
 - `SEARXNG_TIMEOUT`: Request timeout in seconds (default: 30)
 - `SEARXNG_USER_AGENT`: Custom user agent string (default: searxng-mcp-server/0.1.0)
 - `LOG_LEVEL`: Logging level (default: INFO)

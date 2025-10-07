@@ -21,7 +21,7 @@ class Config:
             Config instance
         """
         # Start with environment variables
-        searxng_url = os.getenv("SEARXNG_URL", "http://searxng.nymble.abifog.com/")
+        searxng_url = os.getenv("SEARXNG_URL")
         timeout = int(os.getenv("SEARXNG_TIMEOUT", "30"))
         user_agent = os.getenv("SEARXNG_USER_AGENT", "searxng-mcp-server/0.1.0")
 
@@ -30,6 +30,11 @@ class Config:
             searxng_url = args.searxng_url or searxng_url
             timeout = args.timeout or timeout
             user_agent = args.user_agent or user_agent
+
+        if not searxng_url:
+            raise ValueError(
+                "SearxNG URL is required. Set SEARXNG_URL environment variable or use --searxng-url argument"
+            )
 
         return cls(
             searxng_url=searxng_url.rstrip("/"),
@@ -49,14 +54,14 @@ def create_argument_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""\
             Environment Variables:
-              SEARXNG_URL           SearxNG instance URL (default: http://searxng.nymble.abifog.com/)
+              SEARXNG_URL           SearxNG instance URL (required)
               SEARXNG_TIMEOUT       Request timeout in seconds (default: 30)
               SEARXNG_USER_AGENT    Custom user agent string (default: searxng-mcp-server/0.1.0)
               LOG_LEVEL             Logging level (default: INFO)
 
             Examples:
-              %(prog)s                                    # Run with default settings
               %(prog)s --searxng-url https://searx.be     # Use custom SearxNG instance
+              SEARXNG_URL=https://searx.be %(prog)s       # Use environment variable
             """),
     )
 
