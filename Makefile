@@ -3,18 +3,24 @@
 export $(shell sed 's/=.*//' .env)
 SHELL := /bin/bash
 
-IMAGE_NAME = code.abifog.com/packages/searxng-mcp-server:latest
+IMAGE_NAME = docker.io/icewreck/searxng-mcp-server:latest
 
 .PHONY: *
 
-pex:
-	uv pip compile pyproject.toml > requirements.txt
+pex: build
 	uvx pex -r requirements.txt . -o ./build/searxng-mcp-server -e searxng_mcp_server:main --python python3
 
 build:
+	# build python package
+	rm -rf dist/
+	rm -rf searxng_mcp_server.egg-info
 	uv pip compile pyproject.toml > requirements.txt
+	uv build
 	podman build -t $(IMAGE_NAME) .
+
+publish: build
 	podman push $(IMAGE_NAME)
+	uv publish
 
 develop:
 	uv venv ./.venv
