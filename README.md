@@ -2,6 +2,8 @@
 
 A Model Context Protocol (MCP) server that provides search capabilities through [SearxNG](https://docs.searxng.org/), the privacy-respecting metasearch engine.
 
+PyPi: https://pypi.org/project/searxng-mcp-server/#description
+
 ## Usage
 
 ### Using uvx
