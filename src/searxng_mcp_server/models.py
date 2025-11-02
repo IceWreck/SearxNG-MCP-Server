@@ -46,6 +46,14 @@ class NewsSearchResult(SearchResult):
     published_date: datetime | None = Field(default=None, description="Article publication date")
 
 
+class FetchUrlResult(BaseModel):
+    """Model for URL fetch results."""
+
+    url: str = Field(description="The URL that was fetched")
+    title: str | None = Field(default=None, description="The title of the fetched content")
+    content: str = Field(description="The markdown content of the fetched URL")
+
+
 class WebSearchResponse(BaseModel):
     """Base model for web search responses."""
 
@@ -80,3 +88,11 @@ class NewsSearchResponse(BaseModel):
     total_results: int = Field(description="Total number of results found")
     results: list[NewsSearchResult] = Field(description="List of news search results")
     error: str | None = Field(default=None, description="Error message if search failed")
+
+
+class FetchUrlResponse(BaseModel):
+    """Response model for URL fetching."""
+
+    query: str = Field(description="The URL that was fetched")
+    result: FetchUrlResult | None = Field(default=None, description="The fetch result")
+    error: str | None = Field(default=None, description="Error message if fetch failed")

@@ -2,10 +2,13 @@ from typing import Any
 from datetime import datetime
 
 import httpx
+from markitdown import MarkItDown
 
 from .config import Config
 from .log import get_logger
 from .models import (
+    FetchUrlResult,
+    FetchUrlResponse,
     ImageSearchResult,
     ImageSearchResponse,
     NewsSearchResult,
@@ -361,3 +364,38 @@ class SearxNGClient:
         except Exception as e:
             logger.error("search_news failed: %s", e)
             return NewsSearchResponse(query=query, total_results=0, results=[], error=str(e))
+
+    def fetch_url(self, url: str) -> FetchUrlResponse:
+        """
+        Fetch content from a URL and convert it to markdown.
+
+        Args:
+            url: The URL to fetch and convert to markdown
+
+        Returns:
+            FetchUrlResponse with the markdown content and metadata
+        """
+        try:
+            logger.info("fetching url: %s", url)
+
+            md = MarkItDown()
+            result = md.convert(url)
+            title = result.title or ""
+
+            fetch_result = FetchUrlResult(
+                url=url,
+                title=title,
+                content=result.text_content,
+            )
+
+            logger.info("successfully fetched and converted url: %s", url)
+
+            return FetchUrlResponse(
+                query=url,
+                result=fetch_result,
+                error=None,
+            )
+
+        except Exception as e:
+            logger.error("fetch_url failed for %s: %s", url, e)
+            return FetchUrlResponse(query=url, result=None, error=str(e))

@@ -38,6 +38,7 @@ def main() -> None:
     mcp.add_tool(Tool.from_function(client.search_images))
     mcp.add_tool(Tool.from_function(client.search_videos))
     mcp.add_tool(Tool.from_function(client.search_news))
+    mcp.add_tool(Tool.from_function(client.fetch_url))
 
     # Run the MCP server
     try:
