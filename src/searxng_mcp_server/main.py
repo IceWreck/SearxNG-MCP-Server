@@ -10,7 +10,14 @@ from .tools import SearxNGClient
 logger = get_logger(__name__)
 
 # Initialize FastMCP server
-mcp = FastMCP("SearxNG Search Server")
+mcp = FastMCP(
+    name="SearxNG Search Server",
+    instructions=(
+        "This server provides search capabilities using the SearxNG meta search engine."
+        "For finding information, use the search tools first to discover relevant results, "
+        "then use fetch_url to retrieve detailed content from specific URLs when needed."
+    ),
+)
 
 
 def main() -> None:
