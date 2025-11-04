@@ -1,6 +1,6 @@
 [project]
 name = "searxng-mcp-server"
-version = "0.1.1"
+version = "0.1.2"
 description = "MCP Server for SearxNG"
 readme = "README.md"
 authors = [{ name = "Anchit Bajaj", email = "ab@abifog.com" }]
@@ -8,7 +8,7 @@ requires-python = ">=3.11"
 dependencies = [
     "fastmcp>=2.12.4",
     "httpx>=0.28.1",
-    "markitdown>=0.1.3",
+    "markitdown[pdf]>=0.1.3",
     "pydantic>=2.11.10",
 ]
 urls = { Homepage = "https://github.com/IceWreck/SearxNG-MCP-Server", Repository = "https://github.com/IceWreck/SearxNG-MCP-Server" }
