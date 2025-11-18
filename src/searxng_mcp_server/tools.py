@@ -5,9 +5,9 @@ import asyncio
 import httpx
 from markitdown import MarkItDown
 
-from .config import Config
-from .log import get_logger
-from .models import (
+from searxng_mcp_server.config import Config
+from searxng_mcp_server.log import get_logger
+from searxng_mcp_server.models import (
     FetchUrlResult,
     FetchUrlResponse,
     ImageSearchResult,

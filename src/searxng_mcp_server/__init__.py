@@ -1,5 +1,5 @@
 """SearxNG MCP Server."""
 
-from .main import main
+from searxng_mcp_server.main import main
 
 __all__ = ["main"]

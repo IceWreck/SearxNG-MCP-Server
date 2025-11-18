@@ -3,9 +3,9 @@ import sys
 from fastmcp import FastMCP
 from fastmcp.tools.tool import Tool
 
-from .config import Config, create_argument_parser
-from .log import get_logger
-from .tools import SearxNGClient
+from searxng_mcp_server.config import Config, create_argument_parser
+from searxng_mcp_server.log import get_logger
+from searxng_mcp_server.tools import SearxNGClient
 
 logger = get_logger(__name__)
 
