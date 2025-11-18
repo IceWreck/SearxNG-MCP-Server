@@ -25,9 +25,9 @@ beautifulsoup4==4.14.2
     # via
     #   markdownify
     #   markitdown
-cachetools==6.2.1
+cachetools==6.2.2
     # via py-key-value-aio
-certifi==2025.10.5
+certifi==2025.11.12
     # via
     #   httpcore
     #   httpx
@@ -37,8 +37,9 @@ cffi==2.0.0
 charset-normalizer==3.4.4
     # via
     #   markitdown
+    #   pdfminer-six
     #   requests
-click==8.3.0
+click==8.3.1
     # via
     #   magika
     #   uvicorn
@@ -47,9 +48,10 @@ coloredlogs==15.0.1
 cryptography==46.0.3
     # via
     #   authlib
+    #   pdfminer-six
     #   pyjwt
     #   secretstorage
-cyclopts==4.2.1
+cyclopts==4.2.4
     # via fastmcp
 defusedxml==0.7.1
     # via markitdown
@@ -59,13 +61,13 @@ dnspython==2.8.0
     # via email-validator
 docstring-parser==0.17.0
     # via cyclopts
-docutils==0.22.2
+docutils==0.22.3
     # via rich-rst
 email-validator==2.3.0
     # via pydantic
 exceptiongroup==1.3.0
     # via fastmcp
-fastmcp==2.13.0.2
+fastmcp==2.13.1
     # via searxng-mcp-server (pyproject.toml)
 flatbuffers==25.9.23
     # via onnxruntime
@@ -108,17 +110,17 @@ jsonschema-path==0.3.4
     # via fastmcp
 jsonschema-specifications==2025.9.1
     # via jsonschema
-keyring==25.6.0
+keyring==25.7.0
     # via py-key-value-aio
 magika==0.6.3
     # via markitdown
 markdown-it-py==4.0.0
     # via rich
-markdownify==1.2.0
+markdownify==1.2.2
     # via markitdown
 markitdown==0.1.3
     # via searxng-mcp-server (pyproject.toml)
-mcp==1.20.0
+mcp==1.21.2
     # via fastmcp
 mdurl==0.1.2
     # via markdown-it-py
@@ -128,7 +130,7 @@ more-itertools==10.8.0
     #   jaraco-functools
 mpmath==1.3.0
     # via sympy
-numpy==2.3.4
+numpy==2.3.5
     # via
     #   magika
     #   onnxruntime
@@ -142,9 +144,11 @@ pathable==0.4.4
     # via jsonschema-path
 pathvalidate==3.3.1
     # via py-key-value-aio
+pdfminer-six==20251107
+    # via markitdown
 platformdirs==4.5.0
     # via fastmcp
-protobuf==6.33.0
+protobuf==6.33.1
     # via onnxruntime
 py-key-value-aio==0.2.8
     # via fastmcp
@@ -152,16 +156,16 @@ py-key-value-shared==0.2.8
     # via py-key-value-aio
 pycparser==2.23
     # via cffi
-pydantic==2.12.3
+pydantic==2.12.4
     # via
     #   searxng-mcp-server (pyproject.toml)
     #   fastmcp
     #   mcp
     #   openapi-pydantic
     #   pydantic-settings
-pydantic-core==2.41.4
+pydantic-core==2.41.5
     # via pydantic
-pydantic-settings==2.11.0
+pydantic-settings==2.12.0
     # via mcp
 pygments==2.19.2
     # via rich
@@ -194,11 +198,11 @@ rich==14.2.0
     #   rich-rst
 rich-rst==1.3.2
     # via cyclopts
-rpds-py==0.28.0
+rpds-py==0.29.0
     # via
     #   jsonschema
     #   referencing
-secretstorage==3.4.0
+secretstorage==3.4.1
     # via keyring
 six==1.17.0
     # via markdownify
@@ -217,6 +221,7 @@ typing-extensions==4.15.0
     #   anyio
     #   beautifulsoup4
     #   exceptiongroup
+    #   mcp
     #   py-key-value-shared
     #   pydantic
     #   pydantic-core
@@ -225,12 +230,15 @@ typing-extensions==4.15.0
     #   typing-inspection
 typing-inspection==0.4.2
     # via
+    #   mcp
     #   pydantic
     #   pydantic-settings
 urllib3==2.5.0
     # via requests
 uvicorn==0.38.0
-    # via mcp
+    # via
+    #   fastmcp
+    #   mcp
 websockets==15.0.1
     # via fastmcp
 zipp==3.23.0
