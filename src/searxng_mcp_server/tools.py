@@ -1,6 +1,7 @@
 from typing import Any
 from datetime import datetime
 
+import asyncio
 import httpx
 from markitdown import MarkItDown
 
@@ -32,9 +33,9 @@ class SearxNGClient:
             config: Configuration instance
         """
         self.config = config
-        self.client = httpx.Client(timeout=config.timeout, headers={"User-Agent": config.user_agent})
+        self.client = httpx.AsyncClient(timeout=config.timeout, headers={"User-Agent": config.user_agent})
 
-    def _search(
+    async def _search(
         self,
         query: str,
         categories: list[str] | None = None,
@@ -82,7 +83,7 @@ class SearxNGClient:
         params["safesearch"] = 1 if safesearch else 0
 
         try:
-            response = self.client.get(
+            response = await self.client.get(
                 f"{self.config.searxng_url}/search",
                 params=params,  # type: ignore[arg-type]
             )
@@ -226,7 +227,7 @@ class SearxNGClient:
 
         return results
 
-    def search_web(
+    async def search_web(
         self,
         query: str,
         language: str | None = None,
@@ -249,7 +250,7 @@ class SearxNGClient:
             WebSearchResponse with web search results
         """
         try:
-            raw_results = self._search(
+            raw_results = await self._search(
                 query=query,
                 categories=None,
                 engines=None,
@@ -274,7 +275,7 @@ class SearxNGClient:
             logger.error("search_web failed: %s", e)
             return WebSearchResponse(query=query, total_results=0, results=[], error=str(e))
 
-    def search_images(self, query: str, max_results: int = 10) -> ImageSearchResponse:
+    async def search_images(self, query: str, max_results: int = 10) -> ImageSearchResponse:
         """Search for images using SearxNG.
 
         Args:
@@ -285,7 +286,7 @@ class SearxNGClient:
             ImageSearchResponse with image search results
         """
         try:
-            raw_results = self._search(query=query, categories=["images"])
+            raw_results = await self._search(query=query, categories=["images"])
             image_results = self._create_image_results(raw_results)
 
             # Apply max_results limit
@@ -302,7 +303,7 @@ class SearxNGClient:
             logger.error("search_images failed: %s", e)
             return ImageSearchResponse(query=query, total_results=0, results=[], error=str(e))
 
-    def search_videos(self, query: str, max_results: int = 10) -> VideoSearchResponse:
+    async def search_videos(self, query: str, max_results: int = 10) -> VideoSearchResponse:
         """Search for videos using SearxNG.
 
         Args:
@@ -313,7 +314,7 @@ class SearxNGClient:
             VideoSearchResponse with video search results
         """
         try:
-            raw_results = self._search(query=query, categories=["videos"])
+            raw_results = await self._search(query=query, categories=["videos"])
             video_results = self._create_video_results(raw_results)
 
             # Apply max_results limit
@@ -330,7 +331,7 @@ class SearxNGClient:
             logger.error("search_videos failed: %s", e)
             return VideoSearchResponse(query=query, total_results=0, results=[], error=str(e))
 
-    def search_news(
+    async def search_news(
         self,
         query: str,
         time_range: str | None = None,
@@ -348,7 +349,7 @@ class SearxNGClient:
             NewsSearchResponse with news search results
         """
         try:
-            raw_results = self._search(query=query, categories=["news"], time_range=time_range)
+            raw_results = await self._search(query=query, categories=["news"], time_range=time_range)
             news_results = self._create_news_results(raw_results)
 
             # Apply max_results limit
@@ -365,7 +366,7 @@ class SearxNGClient:
             logger.error("search_news failed: %s", e)
             return NewsSearchResponse(query=query, total_results=0, results=[], error=str(e))
 
-    def fetch_url(self, url: str) -> FetchUrlResponse:
+    async def fetch_url(self, url: str) -> FetchUrlResponse:
         """
         Fetch content from a URL and convert it to markdown.
 
@@ -379,7 +380,11 @@ class SearxNGClient:
             logger.info("fetching url: %s", url)
 
             md = MarkItDown()
-            result = md.convert(url)
+
+            # Run the synchronous convert in a thread pool
+            loop = asyncio.get_event_loop()
+            result = await loop.run_in_executor(None, md.convert, url)
+
             title = result.title or ""
 
             fetch_result = FetchUrlResult(
