@@ -30,12 +30,21 @@ podman run --rm -i docker.io/icewreck/searxng-mcp-server:latest --searxng-url ht
 podman run --rm -i -e SEARXNG_URL=https://searx.be docker.io/icewreck/searxng-mcp-server:latest
 ```
 
+### Usage as Library
+
+You can also use the SearxNG client directly in your Python projects. The client is fully async and requires `async/await` syntax.
+
+For detailed examples, see the `examples/client_example.py` file in the repository.
+
+The SearxNGClient can be easily integrated into custom AI agents as a search tool. All search methods are async and return structured response objects.
+
 ## Available Tools
 
 - **`search_web`**: General web search with language and time filtering
 - **`search_images`**: Image search across multiple search engines
 - **`search_videos`**: Video search from various platforms
 - **`search_news`**: News search with time range filtering
+- **`fetch_url`**: Fetch content from a URL and convert it to markdown
 
 ## Configuration
 
