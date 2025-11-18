@@ -39,9 +39,12 @@ mypy:
 	uv run mypy ./src
 
 run:
-	searxng-mcp-server
+	uv run searxng-mcp-server
 
 run-container:
 	podman run --rm -it \
 		--name searxng-mcp-server \
 		$(IMAGE_NAME)
+
+inspector:
+	npx @modelcontextprotocol/inspector uv run searxng-mcp-server
