@@ -381,9 +381,9 @@ class SearxNGClient:
 
             md = MarkItDown()
 
-            # Run the synchronous convert in a thread pool
+            # Run the synchronous convert in a thread pool with timeout
             loop = asyncio.get_event_loop()
-            result = await loop.run_in_executor(None, md.convert, url)
+            result = await asyncio.wait_for(loop.run_in_executor(None, md.convert, url), timeout=self.config.timeout)
 
             title = result.title or ""
 
@@ -401,6 +401,11 @@ class SearxNGClient:
                 error=None,
             )
 
+        except asyncio.TimeoutError:
+            logger.error("fetch_url timed out for %s after %d seconds", url, self.config.timeout)
+            return FetchUrlResponse(
+                query=url, result=None, error=f"conversion timed out after {self.config.timeout} seconds"
+            )
         except Exception as e:
             logger.error("fetch_url failed for %s: %s", url, e)
             return FetchUrlResponse(query=url, result=None, error=str(e))
