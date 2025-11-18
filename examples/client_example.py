@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Example script demonstrating how to use SearxNGClient as a library."""
 
+import asyncio
+
 from searxng_mcp_server.config import Config
 from searxng_mcp_server.tools import SearxNGClient
 from searxng_mcp_server.log import get_logger
@@ -8,7 +10,7 @@ from searxng_mcp_server.log import get_logger
 logger = get_logger(__name__)
 
 
-def example_web_search():
+async def example_web_search():
     """Example of performing a web search."""
     logger.info("starting web search example")
 
@@ -19,7 +21,7 @@ def example_web_search():
     client = SearxNGClient(config)
 
     # Perform a web search
-    response = client.search_web(query="Python programming", language="en", max_results=5)
+    response = await client.search_web(query="Python programming", language="en", max_results=5)
 
     if response.error:
         logger.error("web search failed: %s", response.error)
@@ -39,14 +41,14 @@ def example_web_search():
         logger.info("")
 
 
-def example_image_search():
+async def example_image_search():
     """Example of performing an image search."""
     logger.info("starting image search example")
 
     config = Config.from_env(None)
     client = SearxNGClient(config)
 
-    response = client.search_images(query="cute cats", max_results=3)
+    response = await client.search_images(query="cute cats", max_results=3)
 
     if response.error:
         logger.error("image search failed: %s", response.error)
@@ -70,14 +72,14 @@ def example_image_search():
         logger.info("")
 
 
-def example_video_search():
+async def example_video_search():
     """Example of performing a video search."""
     logger.info("starting video search example")
 
     config = Config.from_env(None)
     client = SearxNGClient(config)
 
-    response = client.search_videos(query="machine learning tutorial", max_results=3)
+    response = await client.search_videos(query="machine learning tutorial", max_results=3)
 
     if response.error:
         logger.error("video search failed: %s", response.error)
@@ -99,14 +101,14 @@ def example_video_search():
         logger.info("")
 
 
-def example_news_search():
+async def example_news_search():
     """Example of performing a news search."""
     logger.info("starting news search example")
 
     config = Config.from_env(None)
     client = SearxNGClient(config)
 
-    response = client.search_news(
+    response = await client.search_news(
         query="artificial intelligence",
         time_range="week",  # Recent news from the past week
         max_results=5,
@@ -131,7 +133,7 @@ def example_news_search():
         logger.info("")
 
 
-def example_advanced_search():
+async def example_advanced_search():
     """Example of advanced search with specific parameters."""
     logger.info("starting advanced search example")
 
@@ -139,7 +141,7 @@ def example_advanced_search():
     client = SearxNGClient(config)
 
     # Search with advanced parameters
-    response = client.search_web(
+    response = await client.search_web(
         query="climate change",
         language="en-US",
         time_range="month",
@@ -163,26 +165,26 @@ def example_advanced_search():
         logger.info("")
 
 
-def main():
+async def main():
     """Run all examples."""
     logger.info("starting searxng client library examples")
     logger.info("make sure to set SEARXNG_URL environment variable if you want to use a custom instance")
     logger.info("default: https://searx.be")
 
     try:
-        example_web_search()
+        await example_web_search()
         logger.info("=" * 50)
 
-        example_image_search()
+        await example_image_search()
         logger.info("=" * 50)
 
-        example_video_search()
+        await example_video_search()
         logger.info("=" * 50)
 
-        example_news_search()
+        await example_news_search()
         logger.info("=" * 50)
 
-        example_advanced_search()
+        await example_advanced_search()
 
     except Exception as e:
         logger.error("example failed: %s", e)
@@ -193,4 +195,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
