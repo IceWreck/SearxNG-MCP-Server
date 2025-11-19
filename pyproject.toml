@@ -1,6 +1,6 @@
 [project]
 name = "searxng-mcp-server"
-version = "0.1.4"
+version = "0.1.5"
 description = "MCP Server for SearxNG"
 readme = "README.md"
 authors = [{ name = "Anchit Bajaj", email = "ab@abifog.com" }]
