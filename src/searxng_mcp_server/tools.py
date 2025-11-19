@@ -1,5 +1,6 @@
 from typing import Any
 from datetime import datetime
+import tempfile
 
 import asyncio
 import httpx
@@ -379,33 +380,47 @@ class SearxNGClient:
         try:
             logger.info("fetching url: %s", url)
 
-            md = MarkItDown()
+            # Download the content using httpx
+            response = await self.client.get(url)
+            response.raise_for_status()
 
-            # Run the synchronous convert in a thread pool with timeout
-            loop = asyncio.get_event_loop()
-            result = await asyncio.wait_for(loop.run_in_executor(None, md.convert, url), timeout=self.config.timeout)
+            # Save to a temporary file for MarkItDown to process
+            with tempfile.NamedTemporaryFile(delete=True) as temp_file:
+                temp_file.write(response.content)
+                temp_file.flush()
 
-            title = result.title or ""
+                md = MarkItDown()
 
-            fetch_result = FetchUrlResult(
-                url=url,
-                title=title,
-                content=result.text_content,
-            )
+                # Convert the downloaded file using MarkItDown
+                loop = asyncio.get_event_loop()
+                result = await asyncio.wait_for(
+                    loop.run_in_executor(None, md.convert, temp_file.name), timeout=self.config.timeout
+                )
 
-            logger.info("successfully fetched and converted url: %s", url)
+                title = result.title or ""
 
-            return FetchUrlResponse(
-                query=url,
-                result=fetch_result,
-                error=None,
-            )
+                fetch_result = FetchUrlResult(
+                    url=url,
+                    title=title,
+                    content=result.text_content,
+                )
+
+                logger.info("successfully fetched and converted url: %s", url)
+
+                return FetchUrlResponse(
+                    query=url,
+                    result=fetch_result,
+                    error=None,
+                )
 
         except asyncio.TimeoutError:
             logger.error("fetch_url timed out for %s after %d seconds", url, self.config.timeout)
             return FetchUrlResponse(
                 query=url, result=None, error=f"conversion timed out after {self.config.timeout} seconds"
             )
+        except httpx.HTTPError as e:
+            logger.error("fetch_url http error for %s: %s", url, e)
+            return FetchUrlResponse(query=url, result=None, error=f"http error: {str(e)}")
         except Exception as e:
             logger.error("fetch_url failed for %s: %s", url, e)
             return FetchUrlResponse(query=url, result=None, error=str(e))
